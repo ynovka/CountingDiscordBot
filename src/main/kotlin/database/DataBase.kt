@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 
 class DataBase {
     companion object {
-        lateinit var database: Database
+        lateinit var mariadb: Database
             private set
     }
     
@@ -16,11 +16,13 @@ class DataBase {
     private val password = Dotenv.load().get("DB_PASSWORD").toString()
     
     init {
-        database = Database.connect(
+        mariadb = Database.connect(
             "jdbc:mariadb://$ip:$port/$table",
             driver = "org.mariadb.jdbc.Driver",
             user = user,
             password = password
         )
+        
+        DatabaseMigration.migrate()
     }
 }

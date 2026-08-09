@@ -2,11 +2,11 @@ package ru.ynovka.database.table
 
 import org.jetbrains.exposed.v1.core.Table
 
-object Players : Table("players") {
+object PlayerTable : Table("player") {
     
     val playerId = long("player_id")
     
-    val serverId = long("server_id").references(Servers.id)
+    val serverId = long("server_id").references(ServerTable.id)
     
     var correct = uinteger("correct").default(0u)
     var wrong = uinteger("wrong").default(0u)

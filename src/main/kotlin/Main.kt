@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.ChunkingFilter
 import net.dv8tion.jda.api.utils.MemberCachePolicy
+import ru.ynovka.database.DataBase
 
 class Main {
     companion object {
@@ -27,7 +28,9 @@ class Main {
                 setChunkingFilter(ChunkingFilter.ALL)
             }
             
-            ServerEvents.register()
+            DataBase()
+            
+            GuildEvents.register()
         }
     }
 }

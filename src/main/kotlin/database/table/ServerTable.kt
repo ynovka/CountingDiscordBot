@@ -4,7 +4,7 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
 import org.jetbrains.exposed.v1.datetime.timestamp
 
-object Servers : Table("servers") {
+object ServerTable : Table("server") {
     
     val id = long("id")
     
