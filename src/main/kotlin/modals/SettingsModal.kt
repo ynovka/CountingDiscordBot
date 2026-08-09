@@ -46,6 +46,12 @@ object SettingsModal {
             
             ServerService.setChannel(server, channelId)
             
+            channel.retrievePinnedMessages().queue { messages ->
+                messages.forEach { message ->
+                    channel.unpinMessageById(message.message.id)
+                }
+            }
+            
             channel.sendMessage(
                 SettingsMessage.message
             ).queue {
