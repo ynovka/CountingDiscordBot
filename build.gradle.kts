@@ -18,6 +18,9 @@ dependencies {
     }
     implementation("club.minnced:jda-ktx:0.15.0")
     
+    //.env
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.2")
+    
     // DB
     implementation("org.jetbrains.exposed:exposed-core:1.4.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.4.0")
