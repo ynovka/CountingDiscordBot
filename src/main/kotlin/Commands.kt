@@ -3,7 +3,7 @@ package ru.ynovka
 import dev.minn.jda.ktx.events.onCommand
 import net.dv8tion.jda.api.interactions.commands.build.Commands.slash
 import ru.ynovka.Main.Companion.jda
-import ru.ynovka.messages.Settings
+import ru.ynovka.messages.SettingsMessage
 
 object Commands {
     
@@ -16,7 +16,7 @@ object Commands {
         
         jda.onCommand("настройки") { e ->
             e.replyModal(
-                Settings.modal
+                SettingsMessage.modal
             ).queue()
         }
     }

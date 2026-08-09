@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.modals.Modal
 import ru.ynovka.Main.Companion.jda
 import ru.ynovka.database.repository.PlayerRepository
+import ru.ynovka.messages.SettingsMessage
 
 object SettingsModal {
     
@@ -31,10 +32,10 @@ object SettingsModal {
                 ?.first()
                 ?.toLong()
                 ?: return@listener
-            val channel = jda.getTextChannelById(channelId)
+            val channel = jda.getTextChannelById(channelId) ?: return@listener
             
             channel.sendMessage(
-            
+                SettingsMessage.message
             )
         }
     }
