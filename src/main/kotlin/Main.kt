@@ -10,18 +10,19 @@ class Main {
     companion object {
         lateinit var jda: JDA
             private set
-    }
-    
-    fun main() {
-        jda = light("") {
-            enableIntents(
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.MESSAGE_CONTENT,
-            )
-            
-            setMemberCachePolicy(MemberCachePolicy.ALL)
-            setChunkingFilter(ChunkingFilter.ALL)
+        
+        @JvmStatic
+        fun main(args: Array<String>) {
+            jda = light("") {
+                enableIntents(
+                    GatewayIntent.GUILD_MESSAGES,
+                    GatewayIntent.GUILD_MEMBERS,
+                    GatewayIntent.MESSAGE_CONTENT,
+                )
+                
+                setMemberCachePolicy(MemberCachePolicy.ALL)
+                setChunkingFilter(ChunkingFilter.ALL)
+            }
         }
     }
 }
