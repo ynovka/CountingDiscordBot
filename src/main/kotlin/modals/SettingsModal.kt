@@ -20,72 +20,100 @@ object SettingsModal {
     fun register() {
         
         jda.onCommand("настройки") { e ->
-            e.replyModal(modal).queue()
+            e.replyModal(getModal(e.guild?.idLong)).queue()
         }
         
         jda.listener<ModalInteractionEvent> { e ->
-            if (e.modalId != modal.id) return@listener
-            
+            if (e.modalId != "settings_modal") return@listener
             val server = e.guild?.idLong ?: return@listener
             
-            val shouldRemoveDataString = e.getValue("remove-data")
+            var hasChanges = false
+            
+            val removeData = e.getValue("remove_data")
                 ?.getAsStringList()
-                ?: false
-            if (shouldRemoveDataString != "0") {
+                ?.first()
+                ?: "no"
+            
+            if (removeData == "yes") {
+                hasChanges = true
+                
+                ServerService.resetScore(server)
                 PlayerService.deleteAllWithServer(server)
             }
             
-            val channelId = e.getValue("channel-select")
+            val channelId = e.getValue("channel_select")
                 ?.getAsStringList()
                 ?.first()
                 ?.toLong()
                 ?: return@listener
             
-            if (ServerService.getChannel(server) == channelId) return@listener
-            
-            val channel = jda.getTextChannelById(channelId) ?: return@listener
-            
-            ServerService.setChannel(server, channelId)
-            
-            channel.retrievePinnedMessages().await()
-                .forEach {
-                    it.message.unpin().await()
+            if (ServerService.getChannel(server) != channelId) {
+                hasChanges = true
+                
+                val channel = jda.getTextChannelById(channelId)
+                if (channel == null) {
+                    e.reply("ошибка!").setEphemeral(true).await()
+                    return@listener
                 }
+                
+                ServerService.setChannel(server, channelId)
+                
+                channel.retrievePinnedMessages().await()
+                    .forEach {
+                        it.message.unpin().await()
+                    }
+                
+                channel.sendMessage(SettingsMessage.message).await()
+                    .pin().await()
+            }
             
-            channel.sendMessage(SettingsMessage.message).await()
-                .pin().await()
-            
-            e.reply("готово!").setEphemeral(true).await()
+            if (hasChanges) {
+                e.reply("готово!").setEphemeral(true).await()
+            } else {
+                e.reply("ничего не изменилось!").setEphemeral(true).await()
+            }
         }
         
     }
     
     private val noOption = SelectOption(
         "НЕТ",
-        "0",
+        "no",
         "",
         Emoji.fromUnicode("🔴")
     )
     private val yesOption = SelectOption(
         "ДА",
-        "1",
+        "yes",
         "ДЕЙСТВИЕ НЕЛЬЗЯ БУДЕТ ОТМЕНИТЬ!!!",
         Emoji.fromUnicode("🟢")
     )
     
-    val modal = Modal.create("settings_modal", "Настройка бота")
-        .addComponents(
-            Label.of(
-                "Канал для счёта",
-                EntitySelectMenu.create("channel-select", EntitySelectMenu.SelectTarget.CHANNEL).build()
-            ),
-            Label.of(
-                "Очистить таблицу лидеров?",
-                StringSelectMenu.create("remove-data")
-                    .addOptions(listOf(noOption, yesOption))
-                    .setDefaultOptions(noOption)
-                    .build()
-            )
+    private suspend fun getModal(server: Long?): Modal {
+        val channelSelect = EntitySelectMenu.create(
+            "channel_select",
+            EntitySelectMenu.SelectTarget.CHANNEL
         )
-        .build()
+        
+        server?.let {
+            val channelId = ServerService.getChannel(it) ?: return@let
+            channelSelect.setDefaultValues(EntitySelectMenu.DefaultValue.channel(channelId))
+        }
+        
+        return Modal.create("settings_modal", "Настройка бота")
+            .addComponents(
+                Label.of(
+                    "Канал для счёта",
+                    channelSelect.build()
+                ),
+                Label.of(
+                    "Очистить таблицу лидеров?",
+                    StringSelectMenu.create("remove_data")
+                        .addOptions(listOf(noOption, yesOption))
+                        .setDefaultOptions(noOption)
+                        .build()
+                )
+            )
+            .build()
+    }
 }

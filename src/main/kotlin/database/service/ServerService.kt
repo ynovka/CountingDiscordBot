@@ -26,4 +26,6 @@ object ServerService {
     
     suspend fun setChannel(server: Long, channel: Long) = ServerRepository.setChannel(server, channel)
     
+    suspend fun resetScore(server: Long) = ServerRepository.resetScore(server)
+    
 }

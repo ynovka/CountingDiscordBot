@@ -49,4 +49,15 @@ object ServerRepository {
             }
         }
     }
+    
+    suspend fun resetScore(server: Long) {
+        DatabaseExecutor.transaction {
+            ServerTable.update(
+                where = { ServerTable.id eq server },
+                limit = 1
+            ) {
+                it[ServerTable.currentScore] = 0u
+            }
+        }
+    }
 }
