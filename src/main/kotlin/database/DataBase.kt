@@ -1,5 +1,6 @@
 package ru.ynovka.database
 
+import io.github.cdimascio.dotenv.Dotenv
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class DataBase {
@@ -8,12 +9,18 @@ class DataBase {
             private set
     }
     
+    private val ip = Dotenv.load().get("DB_IP").toString()
+    private val port = Dotenv.load().get("DB_PORT").toString()
+    private val table = Dotenv.load().get("DB_TABLE").toString()
+    private val user = Dotenv.load().get("DB_USER").toString()
+    private val password = Dotenv.load().get("DB_PASSWORD").toString()
+    
     init {
         database = Database.connect(
-            "jdbc:mariadb://45.90.247.243:3306/myshore",
+            "jdbc:mariadb://$ip:$port/$table",
             driver = "org.mariadb.jdbc.Driver",
-            user = "myshore",
-            password = "5d0fdeef723351e423290c29b3946eb6f421a59881a45ca7bbf3d86ff981877c"
+            user = user,
+            password = password
         )
     }
 }

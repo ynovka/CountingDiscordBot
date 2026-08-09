@@ -26,6 +26,8 @@ class Main {
                 setMemberCachePolicy(MemberCachePolicy.ALL)
                 setChunkingFilter(ChunkingFilter.ALL)
             }
+            
+            ServerEvents.register()
         }
     }
 }
