@@ -8,9 +8,9 @@ object ServerTable : Table("server") {
     
     val id = long("id")
     
-    var channelId = long("channel_id").nullable()
+    val channelId = long("channel_id").nullable()
     
-    var currentScore = uinteger("current_score").default(0u)
+    val currentScore = uinteger("current_score").default(0u)
     
     val joinAt = timestamp("join_at").defaultExpression(CurrentTimestamp)
     

@@ -1,15 +1,18 @@
 package ru.ynovka.database.service
 
+import org.jetbrains.exposed.v1.jdbc.update
+import ru.ynovka.database.DatabaseExecutor
+import ru.ynovka.database.model.ServerModel
 import ru.ynovka.database.repository.PlayerRepository
 import ru.ynovka.database.repository.ServerRepository
+import ru.ynovka.database.table.ServerTable
 import java.util.concurrent.ConcurrentHashMap
 
-typealias ChannelId = Long
 typealias ServerId = Long
 
 object ServerService {
     
-    private val channelsCache = ConcurrentHashMap<ServerId, ChannelId>()
+    private val serversCache = ConcurrentHashMap<ServerId, ServerModel>()
     
     suspend fun updateServers(servers: Set<Long>) {
         val registered = ServerRepository.getServers()
@@ -25,25 +28,40 @@ object ServerService {
     
     suspend fun removeServer(server: Long) {
         ServerRepository.removeServer(server)
-        PlayerRepository.deleteAllWithServer(server)
-        channelsCache.remove(server)
+        serversCache.remove(server)
     }
     
-    suspend fun getChannel(server: Long): Long? {
-        channelsCache[server]?.let { return it }
+    suspend fun getChannel(serverId: Long): Long? {
+        serversCache[serverId]?.let { return it.channelId }
         
-        val channel = ServerRepository.getChannel(server)
+        val server = ServerRepository.getServer(serverId) ?: return null
+        serversCache[serverId] = server
         
-        channel?.let { channelsCache[server] = it }
-        
-        return channel
+        return server.channelId
     }
     
-    suspend fun setChannel(server: Long, newChannel: Long) {
-        ServerRepository.setChannel(server, newChannel)
-        channelsCache[server] = newChannel
+    suspend fun setChannel(serverId: ServerId, newChannel: Long) {
+        ServerRepository.setChannel(serverId, newChannel)
+        
+        serversCache.computeIfPresent(serverId) { _, server ->
+            server.withChannelId(newChannel)
+        }
     }
     
-    suspend fun resetScore(server: Long) = ServerRepository.resetScore(server)
+    suspend fun resetScore(server: Long) {
+        ServerRepository.resetScore(server)
+        
+        serversCache.computeIfPresent(server) { _, model ->
+            model.copy(currentScore = 0u)
+        }
+    }
+    
+    suspend fun incrementScore(server: Long) {
+        ServerRepository.incrementScore(server)
+        
+        serversCache.computeIfPresent(server) { _, model ->
+            model.copy(currentScore = model.currentScore + 1u)
+        }
+    }
     
 }
