@@ -1,5 +1,6 @@
 package ru.ynovka.modals
 
+import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.events.listener
 import dev.minn.jda.ktx.events.onCommand
 import dev.minn.jda.ktx.interactions.components.SelectOption
@@ -46,17 +47,15 @@ object SettingsModal {
             
             ServerService.setChannel(server, channelId)
             
-            channel.retrievePinnedMessages().queue { messages ->
-                messages.forEach { message ->
-                    channel.unpinMessageById(message.message.id)
+            channel.retrievePinnedMessages().await()
+                .forEach {
+                    it.message.unpin().await()
                 }
-            }
             
-            channel.sendMessage(
-                SettingsMessage.message
-            ).queue {
-                channel.pinMessageById(it.id)
-            }
+            channel.sendMessage(SettingsMessage.message).await()
+                .pin().await()
+            
+            e.reply("готово!").setEphemeral(true).await()
         }
         
     }

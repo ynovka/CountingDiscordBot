@@ -1,30 +1,31 @@
 package ru.ynovka.messages
 
-import net.dv8tion.jda.api.components.textdisplay.TextDisplay
+import dev.minn.jda.ktx.messages.MessageCreate
+import dev.minn.jda.ktx.messages.named
 import net.dv8tion.jda.api.components.separator.Separator
-import net.dv8tion.jda.api.components.container.Container
-import net.dv8tion.jda.api.components.thumbnail.Thumbnail
-import net.dv8tion.jda.api.components.section.Section
-import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
-import ru.ynovka.Main.Companion.jda
 
 object SettingsMessage {
     
-    val container = Container.of(
-        Section.of(
-            Thumbnail.fromUrl("https://cdn.discordapp.com/attachments/1300559227315818516/1536089218298945596/images_1.jpg?ex=6a7a2210&is=6a78d090&hm=c4f6909c56a0dcb50064e14572f542142b571de83ea6ca6c647a4b17ef9ab375&"),
+    val img = javaClass.getResourceAsStream("/smart.jpg")!!.named("smart.jpg")
+    val message = MessageCreate(useComponentsV2 = true) {
+        container {
+            mediaGallery {
+                item(img)
+            }
             
-            TextDisplay.of("## :rotating_light: ЭТОТ ЧАТ ЗАХВАЧЕН :rotating_light:"),
-            TextDisplay.of("\nНекий умный человек в очках звать которого ${jda.selfUser.name} запретил вам буквы!"),
-            TextDisplay.of("\nОтныне в этом чате вам разрешено только считать!!"),
-            TextDisplay.of("-# фух... кажется это не так сложно..."),
-        ),
-        Separator.createDivider(Separator.Spacing.LARGE),
-    )
-    
-    val message = MessageCreateBuilder()
-        .useComponentsV2()
-        .setComponents(container)
-        .build()
+            separator(isDivider = true, spacing = Separator.Spacing.LARGE)
+            
+            text("""
+                # Йоу, всем привет!!!!!
+                Я Умный человек в очках,
+                можете называть меня **СЧЕТОВОД**
+                Отныне этот чат принадлежит **МНЕ**
+                
+                ## Новые правила чата:
+                - МОЖНО ТОЛЬКО **СЧИТАТЬ**
+                - ОШИБКА - И **ВСЁ СНАЧАЛА**
+            """.trimIndent())
+        }
+    }
     
 }
