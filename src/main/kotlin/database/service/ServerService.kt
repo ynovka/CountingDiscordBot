@@ -22,4 +22,8 @@ object ServerService {
         PlayerRepository.deleteAllWithServer(server)
     }
     
+    suspend fun getChannel(server: Long) = ServerRepository.getChannel(server)
+    
+    suspend fun setChannel(server: Long, channel: Long) = ServerRepository.setChannel(server, channel)
+    
 }

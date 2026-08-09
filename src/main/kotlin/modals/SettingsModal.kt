@@ -10,8 +10,8 @@ import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.modals.Modal
 import ru.ynovka.Main.Companion.jda
-import ru.ynovka.database.repository.PlayerRepository
-import ru.ynovka.database.repository.ServerRepository
+import ru.ynovka.database.service.PlayerService
+import ru.ynovka.database.service.ServerService
 import ru.ynovka.messages.SettingsMessage
 
 object SettingsModal {
@@ -31,7 +31,7 @@ object SettingsModal {
                 ?.getAsStringList()
                 ?: false
             if (shouldRemoveDataString != "0") {
-                PlayerRepository.deleteAllWithServer(server)
+                PlayerService.deleteAllWithServer(server)
             }
             
             val channelId = e.getValue("channel-select")
@@ -40,9 +40,11 @@ object SettingsModal {
                 ?.toLong()
                 ?: return@listener
             
-            if (ServerRepository.getChannel(server) == channelId) return@listener
+            if (ServerService.getChannel(server) == channelId) return@listener
             
             val channel = jda.getTextChannelById(channelId) ?: return@listener
+            
+            ServerService.setChannel(server, channelId)
             
             channel.sendMessage(
                 SettingsMessage.message
@@ -56,7 +58,7 @@ object SettingsModal {
     private val noOption = SelectOption(
         "НЕТ",
         "0",
-        "Удалить участника из тикета",
+        "",
         Emoji.fromUnicode("🔴")
     )
     private val yesOption = SelectOption(
