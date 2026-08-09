@@ -3,6 +3,7 @@ package ru.ynovka.database.repository
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import ru.ynovka.database.DatabaseExecutor
 import ru.ynovka.database.table.ServerTable
@@ -29,5 +30,12 @@ object ServerRepository {
             ServerTable.deleteWhere { ServerTable.id eq server }
         }
     }
+    
+    suspend fun getChannel(server: Long) =
+        DatabaseExecutor.transaction {
+            ServerTable.select(ServerTable.channelId)
+                .where { ServerTable.id eq server }
+                .singleOrNull()
+        }?.let { it[ServerTable.channelId] }
 
 }
