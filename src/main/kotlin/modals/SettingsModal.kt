@@ -1,6 +1,7 @@
 package ru.ynovka.modals
 
 import dev.minn.jda.ktx.events.listener
+import dev.minn.jda.ktx.events.onCommand
 import dev.minn.jda.ktx.interactions.components.SelectOption
 import net.dv8tion.jda.api.components.label.Label
 import net.dv8tion.jda.api.components.selections.EntitySelectMenu
@@ -15,6 +16,11 @@ import ru.ynovka.messages.SettingsMessage
 object SettingsModal {
     
     fun register() {
+        
+        jda.onCommand("настройки") { e ->
+            e.replyModal(modal).queue()
+        }
+        
         jda.listener<ModalInteractionEvent> { e ->
             if (e.modalId != modal.id) return@listener
             
@@ -38,6 +44,7 @@ object SettingsModal {
                 SettingsMessage.message
             )
         }
+        
     }
     
     private val noOption = SelectOption(
