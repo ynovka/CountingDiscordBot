@@ -7,9 +7,10 @@ import net.dv8tion.jda.api.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.components.container.Container
 import net.dv8tion.jda.api.components.thumbnail.Thumbnail
 import dev.minn.jda.ktx.interactions.components.button
+import dev.minn.jda.ktx.messages.MessageCreate
 import net.dv8tion.jda.api.components.section.Section
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import ru.ynovka.Main.Companion.jda
-
 
 object SettingsMessage {
     
@@ -23,14 +24,10 @@ object SettingsMessage {
             TextDisplay.of("-# фух... кажется это не так сложно..."),
         ),
         Separator.createDivider(Separator.Spacing.LARGE),
-        
-        ActionRow.of(
-        button(
-            customId = "yasno-btn",
-            label = "Ясно",
-            style = ButtonStyle.PRIMARY,
-        )
-        )
     )
     
+    val message = MessageCreateBuilder()
+        .useComponentsV2()
+        .setComponents(container)
+        .build()
 }
