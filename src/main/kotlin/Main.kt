@@ -11,7 +11,6 @@ class Main {
         lateinit var jda: JDA
             private set
     }
-    
     fun main() {
         jda = light("") {
             enableIntents(
@@ -24,4 +23,5 @@ class Main {
             setChunkingFilter(ChunkingFilter.ALL)
         }
     }
+    //dfsfsdf
 }
