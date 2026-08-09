@@ -41,22 +41,24 @@ object SettingsModal {
                 PlayerService.deleteAllWithServer(server)
             }
             
-            val channelId = e.getValue("channel_select")
+            val newChannelId = e.getValue("channel_select")
                 ?.getAsStringList()
                 ?.first()
                 ?.toLong()
                 ?: return@listener
             
-            if (ServerService.getChannel(server) != channelId) {
+            val oldChannelId = ServerService.getChannel(server)
+            
+            if (oldChannelId != newChannelId) {
                 hasChanges = true
                 
-                val channel = jda.getTextChannelById(channelId)
+                val channel = jda.getTextChannelById(newChannelId)
                 if (channel == null) {
                     e.reply("ошибка!").setEphemeral(true).await()
                     return@listener
                 }
                 
-                ServerService.setChannel(server, channelId)
+                ServerService.setChannel(server, newChannelId)
                 
                 channel.retrievePinnedMessages().await()
                     .forEach {
