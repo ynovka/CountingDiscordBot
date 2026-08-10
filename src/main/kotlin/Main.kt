@@ -31,10 +31,11 @@ class Main {
             
             DataBase()
             
-            GuildEvents.register()
-            
-            Commands.register()
             Modals.register()
+            Commands.register()
+            
+            GuildEvents.register()
+            MessageEvents.register()
         }
     }
 }

@@ -18,6 +18,9 @@ dependencies {
     }
     implementation("club.minnced:jda-ktx:0.15.0")
     
+    // math
+    implementation("net.objecthunter:exp4j:0.4.8")
+    
     //.env
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.2")
     

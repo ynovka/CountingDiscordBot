@@ -1,11 +1,7 @@
 package ru.ynovka.database.service
 
-import org.jetbrains.exposed.v1.jdbc.update
-import ru.ynovka.database.DatabaseExecutor
 import ru.ynovka.database.model.ServerModel
-import ru.ynovka.database.repository.PlayerRepository
 import ru.ynovka.database.repository.ServerRepository
-import ru.ynovka.database.table.ServerTable
 import java.util.concurrent.ConcurrentHashMap
 
 typealias ServerId = Long
@@ -25,6 +21,8 @@ object ServerService {
     }
     
     suspend fun addServer(server: Long) = ServerRepository.addServer(server)
+    
+    suspend fun getServer(server: Long) = ServerRepository.getServer(server)
     
     suspend fun removeServer(server: Long) {
         ServerRepository.removeServer(server)
