@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.components.separator.Separator
 
 object SettingsMessage {
     
-    val img = javaClass.getResourceAsStream("/smart.jpg")!!.named("smart.jpg")
+    private val img = javaClass.getResourceAsStream("/smart.jpg")!!.named("smart.jpg")
     val message = MessageCreate(useComponentsV2 = true) {
         container {
             mediaGallery {

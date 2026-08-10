@@ -1,6 +1,5 @@
 package ru.ynovka
 
-import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.events.listener
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent
@@ -10,12 +9,16 @@ import net.objecthunter.exp4j.ExpressionBuilder
 import ru.ynovka.Main.Companion.jda
 import ru.ynovka.database.service.PlayerService
 import ru.ynovka.database.service.ServerService
+import ru.ynovka.messages.ArithmeticExceptionMessage
+import ru.ynovka.messages.NonArithmeticExceptionMessage
+import java.util.concurrent.TimeUnit
 
 object MessageEvents {
     fun register() {
         jda.listener<MessageReceivedEvent> { e ->
             val serverId = e.guild.idLong
             val playerId = e.author.idLong
+            val channel = e.channel
             val message = e.message
             val content = message.contentRaw
             
@@ -43,13 +46,19 @@ object MessageEvents {
                     PlayerService.incrementWrong(playerId, serverId)
                 }
             } catch (e: IllegalArgumentException) {
-                // Сюда код попадет, если в строке текст, неизвестные буквы или синтаксические ошибки
-                
-                
+                channel.sendMessage(
+                    NonArithmeticExceptionMessage.message
+                ).queueAfter(5L, TimeUnit.SECONDS) { botMessage ->
+                    botMessage.delete().queue()
+                    message.delete().queue()
+                }
             } catch (e: ArithmeticException) {
-                // Сюда код попадет, например, при делении на ноль (если это запрещено настройками)
-                
-                
+                channel.sendMessage(
+                    ArithmeticExceptionMessage.message
+                ).queueAfter(5L, TimeUnit.SECONDS) { botMessage ->
+                    botMessage.delete().queue()
+                    message.delete().queue()
+                }
             }
         }
         
