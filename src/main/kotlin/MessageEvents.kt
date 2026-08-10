@@ -138,6 +138,7 @@ object MessageEvents {
                 runBlocking {
                     ServerService.resetScore(serverId)
                     PlayerService.incrementWrong(playerId, serverId)
+                    ServerService.updateSender(serverId, playerId)
                 }
             }
         } catch (_: IllegalArgumentException) {
