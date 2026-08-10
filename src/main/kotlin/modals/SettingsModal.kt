@@ -21,13 +21,16 @@ object SettingsModal {
         
         jda.listener<ModalInteractionEvent> { e ->
             if (e.modalId != "settings_modal") return@listener
+            
+            e.deferReply(true).queue()
+            
             val server = e.guild?.idLong ?: return@listener
             
             var hasChanges = false
             
             val removeData = e.getValue("remove_data")
                 ?.getAsStringList()
-                ?.first()
+                ?.firstOrNull()
                 ?: "no"
             
             if (removeData == "yes") {
@@ -39,8 +42,8 @@ object SettingsModal {
             
             val newChannelId = e.getValue("channel_select")
                 ?.getAsStringList()
-                ?.first()
-                ?.toLong()
+                ?.firstOrNull()
+                ?.toLongOrNull()
                 ?: return@listener
             
             val oldChannelId = ServerService.getChannel(server)
@@ -49,8 +52,9 @@ object SettingsModal {
                 hasChanges = true
                 
                 val channel = jda.getTextChannelById(newChannelId)
+                
                 if (channel == null) {
-                    e.reply("ошибка!").setEphemeral(true).await()
+                    e.hook.editOriginal("ошибка!").queue()
                     return@listener
                 }
                 
@@ -61,15 +65,16 @@ object SettingsModal {
                         it.message.unpin().await()
                     }
                 
-                channel.sendMessage(SettingsMessage.message).await()
-                    .pin().await()
+                channel.sendMessage(SettingsMessage.message)
+                    .await()
+                    .pin()
+                    .await()
             }
             
-            if (hasChanges) {
-                e.reply("готово!").setEphemeral(true).await()
-            } else {
-                e.reply("ничего не изменилось!").setEphemeral(true).await()
-            }
+            e.hook.editOriginal(
+                if (hasChanges) "готово!"
+                else "ничего не изменилось!"
+            ).queue()
         }
         
     }

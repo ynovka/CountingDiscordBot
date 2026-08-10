@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import ru.ynovka.Main.Companion.jda
 import ru.ynovka.database.model.PlayerStat
+import ru.ynovka.messages.CurrentNumberMessage
 import ru.ynovka.messages.TopPlayersMessage
 import ru.ynovka.modals.SettingsModal
 
@@ -16,13 +17,27 @@ object Commands {
             .addCommands(
                 Commands.slash("настройки", "настройка бота")
                     .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
+                Commands.slash("число", "текущее число"),
                 Commands.slash("топ", "таблица лидеров")
             )
             .queue()
         
         
         jda.onCommand("настройки") { e ->
-            e.replyModal(SettingsModal.getModal(e.guild?.idLong)).queue()
+            e.replyModal(
+                SettingsModal.getModal(
+                    e.guild?.idLong
+                )
+            ).queue()
+        }
+        
+        
+        jda.onCommand("число") { e ->
+            e.reply(
+                CurrentNumberMessage.getMessage(
+                    e.guild?.idLong
+                )
+            ).setEphemeral(true).queue()
         }
         
         jda.onCommand("топ") { e ->
@@ -32,15 +47,13 @@ object Commands {
                 return@onCommand
             }
             
-            println("1")
-            val msg = TopPlayersMessage.getTop(
-                serverId,
-                e.user.idLong,
-                PlayerStat.CORRECT
-            )
-            println("2")
-            
-            e.reply(msg).setEphemeral(true).queue()
+            e.reply(
+                TopPlayersMessage.getTop(
+                    serverId,
+                    e.user.idLong,
+                    PlayerStat.CORRECT
+                )
+            ).setEphemeral(true).queue()
         }
     }
     

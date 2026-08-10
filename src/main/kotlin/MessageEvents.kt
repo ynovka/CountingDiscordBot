@@ -2,7 +2,6 @@ package ru.ynovka
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.events.listener
-import dev.minn.jda.ktx.messages.SendDefaults.content
 import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
@@ -15,8 +14,6 @@ import ru.ynovka.Main.Companion.jda
 import ru.ynovka.database.model.ServerModel
 import ru.ynovka.database.service.PlayerService
 import ru.ynovka.database.service.ServerService
-import ru.ynovka.database.table.PlayerTable.playerId
-import ru.ynovka.database.table.PlayerTable.serverId
 import ru.ynovka.messages.ArithmeticExceptionMessage
 import ru.ynovka.messages.MessageDeleteMessage
 import ru.ynovka.messages.MessageUpdateMessage
@@ -46,6 +43,7 @@ object MessageEvents {
             if (message.author.isBot) return@listener
             
             val server = ServerService.getServer(serverId) ?: return@listener
+            
             val serverChannelId = server.channelId ?: return@listener
             
             if (serverChannelId != e.channel.idLong) return@listener
@@ -88,6 +86,8 @@ object MessageEvents {
         }
         
         jda.listener<MessageUpdateEvent> { e ->
+            if (ignoreMessageIds.remove(e.messageIdLong)) return@listener
+            
             val serverId = e.guild.idLong
             val score = ServerService.getCurrentScore(serverId) ?: return@listener
             
@@ -132,7 +132,7 @@ object MessageEvents {
                 message.addReaction(Emoji.fromFormatted("\uD83D\uDCA5")).queue()
                 
                 channel.sendMessage(
-                    WrongNumberMessage.getMessage(result, correect)
+                    WrongNumberMessage.getMessage(result, correect, server.bestScore)
                 ).queue()
                 
                 runBlocking {

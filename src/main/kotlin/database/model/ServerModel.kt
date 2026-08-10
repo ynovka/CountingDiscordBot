@@ -10,6 +10,7 @@ data class ServerModel(
     val channelId: Long?,
     val lastSender: Long?,
     val currentScore: UInt,
+    val bestScore: UInt,
     val joinAt: Instant
 )
 
@@ -24,6 +25,7 @@ fun ResultRow.toServerModel(): ServerModel {
         channelId = this[ServerTable.channelId],
         lastSender = this[ServerTable.lastSender],
         currentScore = this[ServerTable.currentScore],
+        bestScore = this[ServerTable.bestScore],
         joinAt = this[ServerTable.joinAt]
     )
 }

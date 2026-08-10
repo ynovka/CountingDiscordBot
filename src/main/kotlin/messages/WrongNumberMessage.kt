@@ -7,7 +7,7 @@ import dev.minn.jda.ktx.messages.named
 object WrongNumberMessage {
     
     private val img = javaClass.getResourceAsStream("/smart_nonono.jpeg")!!.named("smart_nonono.jpeg")
-    fun getMessage(typed: UInt, correct: UInt) = MessageCreate(useComponentsV2 = true) {
+    fun getMessage(typed: UInt, correct: UInt, best: UInt) = MessageCreate(useComponentsV2 = true) {
         container {
             section(
                 accessory = Thumbnail(img)
@@ -20,6 +20,7 @@ object WrongNumberMessage {
                     Начинайте считать сначала!
                 """.trimIndent())
             }
+            text("-# Рекорд: $best")
         }
     }
     

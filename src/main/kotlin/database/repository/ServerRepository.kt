@@ -1,9 +1,10 @@
 package ru.ynovka.database.repository
 
+import org.jetbrains.exposed.v1.core.CustomFunction
+import org.jetbrains.exposed.v1.core.UIntegerColumnType
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.plus
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
-import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.update
 import org.jetbrains.exposed.v1.jdbc.upsert
@@ -43,6 +44,7 @@ object ServerRepository {
                     ServerTable.channelId,
                     ServerTable.lastSender,
                     ServerTable.currentScore,
+                    ServerTable.bestScore,
                     ServerTable.joinAt
                 )
                 .where { ServerTable.id eq server }
@@ -90,6 +92,12 @@ object ServerRepository {
                 limit = 1
             ) {
                 it[ServerTable.currentScore] = ServerTable.currentScore + 1u
+                it[ServerTable.bestScore] = CustomFunction(
+                    "GREATEST",
+                    UIntegerColumnType(),
+                    ServerTable.bestScore,
+                    ServerTable.currentScore + 1u
+                )
             }
         }
     }

@@ -24,7 +24,6 @@ object TopPlayersMessage {
         playerId: Long,
         stat: PlayerStat
     ): MessageCreateData {
-        println("11111")
         val top = PlayerService.getTop(serverId, playerId, stat)
             .map {
                 val user = jda.retrieveUserById(it.value.playerId).await()

@@ -75,7 +75,11 @@ object ServerService {
         ServerRepository.incrementScore(server)
         
         serversCache.computeIfPresent(server) { _, model ->
-            model.copy(currentScore = model.currentScore + 1u)
+            val newScore = model.currentScore + 1u
+            model.copy(
+                currentScore = newScore,
+                bestScore = maxOf(model.bestScore, newScore)
+            )
         }
     }
     

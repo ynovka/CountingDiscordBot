@@ -14,6 +14,8 @@ object ServerTable : Table("server") {
     
     val currentScore = uinteger("current_score").default(0u)
     
+    val bestScore = uinteger("best_score").default(0u)
+    
     val joinAt = timestamp("join_at").defaultExpression(CurrentTimestamp)
     
     override val primaryKey = PrimaryKey(id)
