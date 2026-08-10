@@ -4,18 +4,20 @@ import dev.minn.jda.ktx.interactions.components.Thumbnail
 import dev.minn.jda.ktx.messages.MessageCreate
 import dev.minn.jda.ktx.messages.named
 
-object NonArithmeticExceptionMessage {
+object WrongNumberMessage {
     
     private val img = javaClass.getResourceAsStream("/smart_nonono.jpeg")!!.named("smart_nonono.jpeg")
-    val message = MessageCreate(useComponentsV2 = true) {
+    fun getMessage(typed: UInt, correct: UInt) = MessageCreate(useComponentsV2 = true) {
         container {
             section(
                 accessory = Thumbnail(img)
             ) {
                 text("""
-                    Не-не-не,
-                    Так не пойдёт!
-                    ТОЛЬКО СЧЁТ!!!!
+                    А вот и не правильно!
+                    Ты посчитал что это **$typed**,
+                    Нооо это **$correct**!
+                    
+                    Начинайте считать сначала!
                 """.trimIndent())
             }
         }

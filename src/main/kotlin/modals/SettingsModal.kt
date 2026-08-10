@@ -19,10 +19,6 @@ object SettingsModal {
     
     fun register() {
         
-        jda.onCommand("настройки") { e ->
-            e.replyModal(getModal(e.guild?.idLong)).queue()
-        }
-        
         jda.listener<ModalInteractionEvent> { e ->
             if (e.modalId != "settings_modal") return@listener
             val server = e.guild?.idLong ?: return@listener
@@ -91,7 +87,7 @@ object SettingsModal {
         Emoji.fromUnicode("🟢")
     )
     
-    private suspend fun getModal(server: Long?): Modal {
+    suspend fun getModal(server: Long?): Modal {
         val channelSelect = EntitySelectMenu.create(
             "channel_select",
             EntitySelectMenu.SelectTarget.CHANNEL

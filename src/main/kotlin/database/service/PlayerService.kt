@@ -1,5 +1,7 @@
 package ru.ynovka.database.service
 
+import ru.ynovka.database.model.PlayerModel
+import ru.ynovka.database.model.PlayerStat
 import ru.ynovka.database.repository.PlayerRepository
 
 object PlayerService {
@@ -14,5 +16,8 @@ object PlayerService {
     
     suspend fun incrementMath(playerId: Long, serverId: Long) =
         PlayerRepository.incrementMath(playerId, serverId)
+    
+    suspend fun getTop(serverId: Long, playerId: Long, stat: PlayerStat): Map<Int, PlayerModel> =
+        PlayerRepository.getTop(serverId, playerId, stat)
     
 }

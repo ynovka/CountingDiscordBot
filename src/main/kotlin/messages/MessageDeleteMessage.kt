@@ -9,10 +9,6 @@ object MessageDeleteMessage {
     private val img = javaClass.getResourceAsStream("/smart_nonono.jpeg")!!.named("smart_nonono.jpeg")
     fun getMessage(score: UInt) = MessageCreate(useComponentsV2 = true) {
         container {
-            
-            //  "Кто то решил схитрить и удалил сообщение!",
-            //  "Как же хорошо что я веду счёт"
-            //  "Эм, мы остановились на **X**"
             section(
                 accessory = Thumbnail(img)
             ) {

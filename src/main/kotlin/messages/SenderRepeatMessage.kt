@@ -4,7 +4,7 @@ import dev.minn.jda.ktx.interactions.components.Thumbnail
 import dev.minn.jda.ktx.messages.MessageCreate
 import dev.minn.jda.ktx.messages.named
 
-object NonArithmeticExceptionMessage {
+object SenderRepeatMessage {
     
     private val img = javaClass.getResourceAsStream("/smart_nonono.jpeg")!!.named("smart_nonono.jpeg")
     val message = MessageCreate(useComponentsV2 = true) {
@@ -13,9 +13,9 @@ object NonArithmeticExceptionMessage {
                 accessory = Thumbnail(img)
             ) {
                 text("""
-                    Не-не-не,
-                    Так не пойдёт!
-                    ТОЛЬКО СЧЁТ!!!!
+                    Стоп-стоп-стоп!
+                    Мы тут считаем по очереди!
+                    Дай возможность другим
                 """.trimIndent())
             }
         }

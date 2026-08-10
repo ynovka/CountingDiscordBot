@@ -41,8 +41,16 @@ object ServerService {
     suspend fun setChannel(serverId: ServerId, newChannel: Long) {
         ServerRepository.setChannel(serverId, newChannel)
         
-        serversCache.computeIfPresent(serverId) { _, server ->
-            server.withChannelId(newChannel)
+        serversCache.computeIfPresent(serverId) { _, model ->
+            model.copy(channelId = newChannel)
+        }
+    }
+    
+    suspend fun updateSender(serverId: ServerId, sender: Long) {
+        ServerRepository.updateSender(serverId, sender)
+        
+        serversCache.computeIfPresent(serverId) { _, model ->
+            model.copy(lastSender = sender)
         }
     }
     
@@ -55,10 +63,10 @@ object ServerService {
         return server.currentScore
     }
     
-    suspend fun resetScore(server: Long) {
-        ServerRepository.resetScore(server)
+    suspend fun resetScore(serverId: Long) {
+        ServerRepository.resetScore(serverId)
         
-        serversCache.computeIfPresent(server) { _, model ->
+        serversCache.computeIfPresent(serverId) { _, model ->
             model.copy(currentScore = 0u)
         }
     }

@@ -9,7 +9,6 @@ object ArithmeticExceptionMessage {
     private val img = javaClass.getResourceAsStream("/smart_boom.jpeg")!!.named("smart_boom.jpeg")
     val message = MessageCreate(useComponentsV2 = true) {
         container {
-            
             section(
                 accessory = Thumbnail(img)
             ) {

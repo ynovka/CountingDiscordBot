@@ -10,6 +10,8 @@ object ServerTable : Table("server") {
     
     val channelId = long("channel_id").nullable()
     
+    val lastSender = long("last_sender").nullable()
+    
     val currentScore = uinteger("current_score").default(0u)
     
     val joinAt = timestamp("join_at").defaultExpression(CurrentTimestamp)

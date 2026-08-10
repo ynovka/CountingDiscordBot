@@ -41,6 +41,7 @@ object ServerRepository {
                 .select(
                     ServerTable.id,
                     ServerTable.channelId,
+                    ServerTable.lastSender,
                     ServerTable.currentScore,
                     ServerTable.joinAt
                 )
@@ -56,6 +57,17 @@ object ServerRepository {
                 limit = 1
             ) {
                 it[ServerTable.channelId] = channel
+            }
+        }
+    }
+    
+    suspend fun updateSender(server: Long, sender: Long) {
+        DatabaseExecutor.transaction {
+            ServerTable.update(
+                where = { ServerTable.id eq server },
+                limit = 1
+            ) {
+                it[ServerTable.lastSender] = sender
             }
         }
     }
