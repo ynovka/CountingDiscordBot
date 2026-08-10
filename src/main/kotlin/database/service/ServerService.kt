@@ -46,6 +46,15 @@ object ServerService {
         }
     }
     
+    suspend fun getCurrentScore(serverId: Long): UInt? {
+        serversCache[serverId]?.let { return it.currentScore }
+        
+        val server = ServerRepository.getServer(serverId) ?: return null
+        serversCache[serverId] = server
+        
+        return server.currentScore
+    }
+    
     suspend fun resetScore(server: Long) {
         ServerRepository.resetScore(server)
         

@@ -10,6 +10,8 @@ import ru.ynovka.Main.Companion.jda
 import ru.ynovka.database.service.PlayerService
 import ru.ynovka.database.service.ServerService
 import ru.ynovka.messages.ArithmeticExceptionMessage
+import ru.ynovka.messages.MessageDeleteMessage
+import ru.ynovka.messages.MessageUpdateMessage
 import ru.ynovka.messages.NonArithmeticExceptionMessage
 import java.util.concurrent.TimeUnit
 
@@ -45,14 +47,14 @@ object MessageEvents {
                     
                     PlayerService.incrementWrong(playerId, serverId)
                 }
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 channel.sendMessage(
                     NonArithmeticExceptionMessage.message
                 ).queueAfter(5L, TimeUnit.SECONDS) { botMessage ->
                     botMessage.delete().queue()
                     message.delete().queue()
                 }
-            } catch (e: ArithmeticException) {
+            } catch (_: ArithmeticException) {
                 channel.sendMessage(
                     ArithmeticExceptionMessage.message
                 ).queueAfter(5L, TimeUnit.SECONDS) { botMessage ->
@@ -63,21 +65,23 @@ object MessageEvents {
         }
         
         jda.listener<MessageDeleteEvent> { e ->
-            val server = e.guild.idLong
+            val serverId = e.guild.idLong
+            val score = ServerService.getCurrentScore(serverId) ?: return@listener
+            val channel = e.channel
             
-            // todo Пишем в чат -
-            //  "Кто то решил схитрить и удалил сообщение!",
-            //  "Как же хорошо что я веду счёт"
-            //  "Эм, мы остановились на **X**"
+            channel.sendMessage(
+                MessageDeleteMessage.getMessage(score)
+            ).queue()
         }
         
         jda.listener<MessageUpdateEvent> { e ->
-            val server = e.guild.idLong
+            val serverId = e.guild.idLong
+            val score = ServerService.getCurrentScore(serverId) ?: return@listener
+            val channel = e.channel
             
-            // todo Пишем в чат -
-            //  "Кто то решил схитрить и изменил своё сообщение!",
-            //  "Как же хорошо что я веду счёт"
-            //  "Эм, мы остановились на **X**"
+            channel.sendMessage(
+                MessageUpdateMessage.getMessage(score)
+            ).queue()
         }
     }
 }
