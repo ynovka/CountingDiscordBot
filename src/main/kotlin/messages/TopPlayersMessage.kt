@@ -3,6 +3,7 @@ package ru.ynovka.messages
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Thumbnail
 import dev.minn.jda.ktx.messages.MessageCreate
+import net.dv8tion.jda.api.components.separator.Separator
 import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import ru.ynovka.Main.Companion.jda
 import ru.ynovka.database.model.PlayerStat
@@ -46,13 +47,31 @@ object TopPlayersMessage {
         }
         
         return MessageCreate(useComponentsV2 = true) {
-            top.forEach { player ->
-                container {
+            container {
+                
+                top.forEachIndexed { i, player ->
                     section(
                         accessory = Thumbnail(player.avatar)
                     ) {
-                        text("${player.n}. ${player.username}")
+                        
+                        val num =  when (player.n) {
+                            1 -> ":medal:"
+                            2 -> ":second_place:"
+                            3 -> ":third_place:"
+                            else -> "${player.n}."
+                        }
+                        
+                        text(
+                            """
+                                ## $num `${player.username}`
+                                > -# верных: `${player.correct}`
+                                > -# неверных: `${player.wrong}`
+                                > -# математических: `${player.math}`
+                            """.trimIndent()
+                        )
                     }
+                    
+                    if (top.size != i+1) separator(isDivider = true, spacing = Separator.Spacing.SMALL)
                 }
             }
         }
